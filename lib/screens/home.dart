@@ -1,13 +1,12 @@
-import "dart:ffi";
 import "dart:math";
-import "package:auto_size_text/auto_size_text.dart";
 import "package:flutter/material.dart";
 import "package:flutter_app/models/english_word.dart";
 import "package:flutter_app/screens/setting.dart";
 import "package:flutter_app/ultils/db_keys.dart";
 import "package:flutter_app/ultils/style.dart";
-import 'package:english_words/english_words.dart';
 import "package:flutter_app/wigets/drawer_btn.dart";
+import "package:flutter_app/wigets/english_card.dart";
+import "package:flutter_app/wigets/indicator.dart";
 import "package:shared_preferences/shared_preferences.dart";
 
 class HomePage extends StatefulWidget {
@@ -145,18 +144,15 @@ class _HomePageState extends State<HomePage> {
               controller: _pageController,
               onPageChanged: (index) {
                 double maxScroll = indicatorController.position.maxScrollExtent;
-                double jump = maxScroll / 2;
 
-                // jump = min(jump, 100);
+                if (maxScroll > 0) {
+                  double jump = (index - 1) * 45;
+                  jump = min(jump, maxScroll);
 
-                indicatorController.animateTo(jump, 
-                  duration: const Duration(milliseconds: 300), 
-                  curve: Curves.easeInCubic
-                );
-
-                print(jump);
-
-                // print("offset ${indicatorController.position.maxScrollExtent}, move ${index * 25}");
+                  indicatorController.animateTo(jump,
+                      duration: const Duration(milliseconds: 300),
+                      curve: Curves.easeInCubic);
+                }
 
                 setState(() {
                   _currentPage = index;
@@ -164,77 +160,21 @@ class _HomePageState extends State<HomePage> {
               },
               itemCount: words.length,
               itemBuilder: (context, index) {
-                return Container(
-                    padding: const EdgeInsets.symmetric(
-                        horizontal: 16, vertical: 12),
-                    margin:
-                        const EdgeInsets.symmetric(horizontal: 8, vertical: 16),
-                    decoration: const BoxDecoration(
-                        color: AppStyle.primaryColor,
-                        borderRadius: BorderRadius.all(Radius.circular(24)),
-                        boxShadow: [
-                          BoxShadow(
-                              color: Colors.black26,
-                              offset: Offset(1, 3),
-                              blurRadius: 4)
-                        ]),
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        Container(
-                          alignment: Alignment.centerRight,
-                          child: const Icon(
-                            Icons.heart_broken,
-                            size: 48,
-                            color: Colors.white,
-                          ),
-                        ),
-                        RichText(
-                          maxLines: 1,
-                          overflow: TextOverflow.ellipsis,
-                          text: TextSpan(
-                              text: words[index].letter,
-                              style: AppStyle.h1.copyWith(height: 1, shadows: [
-                                const BoxShadow(
-                                    color: Colors.black38,
-                                    offset: Offset(3, 6),
-                                    blurRadius: 6)
-                              ]),
-                              children: [
-                                TextSpan(
-                                    text: words[index].after,
-                                    style: AppStyle.h3
-                                        .copyWith(fontSize: 54, shadows: []))
-                              ]),
-                        ),
-                        Expanded(
-                          child: Container(
-                            padding: const EdgeInsets.only(
-                                left: 8, right: 8, bottom: 16),
-                            child: SingleChildScrollView(
-                                    child: Text(
-                                  '"${words[index].quote}"',
-                                  style: const TextStyle(
-                                      fontSize: 20, letterSpacing: 0.5),
-                                )),
-                          ),
-                        )
-                      ],
-                    ));
+                return EnglishCard(word: words[index]);
               },
             ),
           ),
           Container(
             padding: const EdgeInsets.symmetric(horizontal: 24),
             margin: const EdgeInsets.only(bottom: 110),
-            height: 20,
+            height: 30,
             child: ListView.builder(
               physics: const NeverScrollableScrollPhysics(),
               controller: indicatorController,
               scrollDirection: Axis.horizontal,
               itemCount: words.length,
               itemBuilder: (context, index) {
-                return buildIndicator(index == _currentPage);
+                return Indicator(index: index, isActive: index == _currentPage);
               },
             ),
           )
@@ -247,17 +187,4 @@ class _HomePageState extends State<HomePage> {
       ),
     );
   }
-}
-
-Widget buildIndicator(bool isActive) {
-  return Container(
-    margin: const EdgeInsets.only(top: 0, bottom: 12, left: 10, right: 10),
-    width: isActive ? 100 : 25,
-    decoration: BoxDecoration(
-        color: isActive ? AppStyle.primaryColor : Colors.grey,
-        borderRadius: const BorderRadius.all(Radius.circular(4)),
-        boxShadow: const [
-          BoxShadow(color: Colors.black26, offset: Offset(0, 2), blurRadius: 2)
-        ]),
-  );
 }
