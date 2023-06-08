@@ -2,6 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter_app/models/english_word.dart';
 import 'package:flutter_app/ultils/style.dart';
 
+import '../wigets/favorite_btn.dart';
+
 class AllWords extends StatefulWidget {
   const AllWords({super.key});
 
@@ -22,6 +24,14 @@ class _AllWordsState extends State<AllWords> {
       start += offset;
       list += items;
       showLoading = false;
+    });
+  }
+
+  toggleFavorite(int index) {
+    setState(() {
+      if (index > 0 && index <= list.length) {
+        list[index].isFavorite = !list[index].isFavorite;
+      }
     });
   }
 
@@ -77,13 +87,23 @@ class _AllWordsState extends State<AllWords> {
             
                   return Material(
                     color: index % 2 == 0 ? Colors.black12 : AppStyle.primaryColor, 
-                    child: ListTile(
-                      leading: Icon(
-                        Icons.favorite,
-                        color: word.isFavorite ? Colors.red : Colors.white,
+                    child: InkWell(
+                      onDoubleTap: () => toggleFavorite(index),
+                      splashColor: Colors.transparent,
+                      child: ListTile(
+                        contentPadding: const EdgeInsets.only(bottom: 6, left: 16, right: 16),
+                        // leading: FavoriteBtn(isFavorite: word.isFavorite, onToggleFavorite: () => toggleFavorite(index)),
+                        
+                        leading: InkWell(
+                          onTap: () => toggleFavorite(index),
+                          child: Icon(
+                            Icons.favorite,
+                            color: word.isFavorite ? Colors.red : Colors.white,
+                          ),
+                        ),
+                        title: Text(label, style: AppStyle.h4.copyWith(color: AppStyle.textColor)),
+                        subtitle: Text(word.quote ?? '', maxLines: 2, overflow: TextOverflow.ellipsis, style: const TextStyle(color: Colors.black54, fontSize: 14)),
                       ),
-                      title: Text(label, style: AppStyle.h4.copyWith(color: AppStyle.textColor)),
-                      subtitle: Text(word.quote ?? '', maxLines: 2, overflow: TextOverflow.ellipsis, style: const TextStyle(color: Colors.black54, fontSize: 14)),
                     ),
                   );
                 },

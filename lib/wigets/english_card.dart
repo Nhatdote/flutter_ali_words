@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_app/models/english_word.dart';
-import 'package:like_button/like_button.dart';
-
+import 'package:flutter_app/wigets/favorite_btn.dart';
 import '../ultils/style.dart';
 
 
@@ -44,27 +43,7 @@ class _EnglishCardState extends State<EnglishCard> {
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                   LikeButton(
-                    mainAxisAlignment: MainAxisAlignment.end,
-                    onTap: (bool isLiked) {
-                      toggle();
-                      return Future.value(!isLiked);
-                    },
-                    isLiked: word.isFavorite,
-                    size: 48,
-                    circleColor: const CircleColor(start: Color(0xff00ddff), end: Color(0xff0099cc)),
-                    bubblesColor: const BubblesColor(
-                      dotPrimaryColor: Color(0xff33b5e5),
-                      dotSecondaryColor: Color(0xff0099cc),
-                    ),
-                    likeBuilder: (bool isLiked) {
-                      return Icon(
-                        Icons.favorite_rounded,
-                        color: isLiked ? Colors.red : Colors.white,
-                        size: 48,
-                      );
-                    },
-                  ),
+                  FavoriteBtn(isFavorite: word.isFavorite, onToggleFavorite: () => word.isFavorite = !word.isFavorite),
                   RichText(
                     maxLines: 1,
                     overflow: TextOverflow.ellipsis,
