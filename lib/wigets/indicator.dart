@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_app/ultils/style.dart';
 
 class Indicator extends StatelessWidget {
-  final int index;
+  final String index;
   final bool isActive;
 
   const Indicator({super.key, required this.index, required this.isActive});
@@ -11,9 +11,11 @@ class Indicator extends StatelessWidget {
   Widget build(BuildContext context) {
     return Column(
       children: [
-        Container(
+        AnimatedContainer(
+          duration: const Duration(milliseconds: 100),
+          curve: Curves.easeInCubic,
           margin: const EdgeInsets.only(top: 0, bottom: 2, left: 10, right: 10),
-          width: isActive ? 100 : 25,
+          width: isActive ? 70 : 25,
           height: 8,
           decoration: BoxDecoration(
             color: isActive ? AppStyle.primaryColor : Colors.grey,
@@ -26,7 +28,7 @@ class Indicator extends StatelessWidget {
         Container(
           alignment: Alignment.center,
           height: 20,
-          child: Text("${index + 1}", style: const TextStyle(fontSize: 12, fontWeight: FontWeight.bold, color: AppStyle.textGrey)),
+          child: Text(index, style: const TextStyle(fontSize: 12, fontWeight: FontWeight.bold, color: AppStyle.textGrey)),
         )
       ],
     );

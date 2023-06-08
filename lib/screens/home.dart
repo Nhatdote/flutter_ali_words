@@ -7,6 +7,7 @@ import "package:flutter_app/ultils/style.dart";
 import "package:flutter_app/wigets/drawer_btn.dart";
 import "package:flutter_app/wigets/english_card.dart";
 import "package:flutter_app/wigets/indicator.dart";
+import "package:flutter_app/wigets/showmore_card.dart";
 import "package:shared_preferences/shared_preferences.dart";
 
 class HomePage extends StatefulWidget {
@@ -24,7 +25,6 @@ class _HomePageState extends State<HomePage> {
   late String quote = "";
   late int _currentPage = 0;
 
-  Map<int, bool> scrollEnds = {};
   List<EnglishWord> words = [];
 
   suffle() {
@@ -43,7 +43,6 @@ class _HomePageState extends State<HomePage> {
 
     setState(() {
       _currentPage = 0;
-      scrollEnds = {};
       words = EnglishWord.getList(perPage);
       quote = EnglishWord.getQuote();
     });
@@ -107,6 +106,15 @@ class _HomePageState extends State<HomePage> {
                   child: DrawerBtn(
                       label: 'Favorites',
                       onTap: () {
+                        
+                      }),
+                ),
+                Padding(
+                  padding: const EdgeInsets.only(left: 24, right: 24, top: 44),
+                  child: DrawerBtn(
+                      label: 'All words',
+                      onTap: () {
+                        _scaffoldState.currentState?.closeDrawer();
                         Navigator.push(context,
                             MaterialPageRoute(builder: (_) => const Setting()));
                       }),
@@ -158,9 +166,13 @@ class _HomePageState extends State<HomePage> {
                   _currentPage = index;
                 });
               },
-              itemCount: words.length,
+              itemCount: words.length + 1,
               itemBuilder: (context, index) {
-                return EnglishCard(word: words[index]);
+                if (index >= 0 && index < words.length) {
+                  return EnglishCard(word: words[index]);
+                } else {
+                  return const ShowmoreCard();
+                }
               },
             ),
           ),
@@ -172,9 +184,10 @@ class _HomePageState extends State<HomePage> {
               physics: const NeverScrollableScrollPhysics(),
               controller: indicatorController,
               scrollDirection: Axis.horizontal,
-              itemCount: words.length,
+              itemCount: words.length + 1,
               itemBuilder: (context, index) {
-                return Indicator(index: index, isActive: index == _currentPage);
+                String label = index >= words.length ? '+' : (index + 1).toString();
+                return Indicator(index: label, isActive: index == _currentPage);
               },
             ),
           )

@@ -9,24 +9,19 @@ class DrawerBtn extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return InkWell(
-      onTap: onTap,
-      child: Container(
-        width: double.infinity,
-        padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
-        decoration: const BoxDecoration(
-          borderRadius: BorderRadius.all(Radius.circular(8)),
-          color: Colors.white,
-          boxShadow: [
-            BoxShadow(
-              color: Colors.black12,
-              offset: Offset(3, 6),
-              blurRadius: 3
-            )
-          ]
-        ),
-        child: Text(label, 
-          style: AppStyle.h5.copyWith(color: AppStyle.textColor, fontWeight: FontWeight.w600),
+    return Material(
+      color: Colors.white,
+      borderRadius: const BorderRadius.all(Radius.circular(8)),
+      shadowColor: Colors.black54,
+      elevation: 8,
+      child: InkWell(
+        onTap: onTap,
+        child: Container(
+          width: double.infinity,
+          padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
+          child: Text(label, 
+            style: AppStyle.h5.copyWith(color: AppStyle.textColor, fontWeight: FontWeight.w600),
+          ),
         ),
       ),
     );

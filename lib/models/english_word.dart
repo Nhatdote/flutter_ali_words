@@ -19,6 +19,25 @@ class EnglishWord {
     this.isFavorite = false
   });
 
+  static EnglishWord _make(word) {
+    return EnglishWord(
+      id: word,
+      letter: word.substring(0, 1).toUpperCase(),
+      after: word.substring(1),
+      noun: word,
+      quote: getQuote(40)
+    );
+  }
+
+  static List<EnglishWord> paginate(int start) {
+    int perPage = 20;
+    Iterable<String> items = nouns.getRange(start, start + perPage);
+
+    return items
+        .map((h) => _make(h))
+        .toList();
+  }
+
   static List<EnglishWord> getList([int len = 5]) {
     final random = Random();
 
@@ -28,14 +47,7 @@ class EnglishWord {
     Iterable<String> items = nouns.getRange(start, end);
 
     return items
-        .map((h) => EnglishWord(
-            id: h,
-            letter: h.substring(0, 1).toUpperCase(),
-            after: h.substring(1),
-            noun: h,
-            quote: getQuote(40)
-          )
-        )
+        .map((h) => _make(h))
         .toList();
   }
 
