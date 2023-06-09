@@ -1,6 +1,8 @@
 import 'dart:math';
 
 import 'package:english_words/english_words.dart';
+import 'package:flutter_app/ultils/db_keys.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 class EnglishWord {
   String? id;
@@ -36,6 +38,13 @@ class EnglishWord {
     return items
         .map((h) => _make(h))
         .toList();
+  }
+
+  static Future<List<EnglishWord>> getFavorite() async {
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    List<String> items = prefs.getStringList(DBKeys.favorites) ?? [];
+
+    return items.map((e) => _make(e)).toList();
   }
 
   static List<EnglishWord> getList([int len = 5]) {

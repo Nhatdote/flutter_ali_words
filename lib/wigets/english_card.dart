@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_app/models/english_word.dart';
+import 'package:flutter_app/ultils/db_keys.dart';
 import 'package:flutter_app/wigets/favorite_btn.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 import '../ultils/style.dart';
 
 
@@ -14,7 +16,18 @@ class EnglishCard extends StatefulWidget {
 }
 
 class _EnglishCardState extends State<EnglishCard> {
+  late SharedPreferences prefs;
   
+  @override
+  void initState() {
+    // TODO: implement initState
+    super.initState();
+
+    () async {
+      prefs = await SharedPreferences.getInstance();
+    }();
+  }
+
   @override
   Widget build(BuildContext context) {
     final EnglishWord word = widget.word;
@@ -24,6 +37,12 @@ class _EnglishCardState extends State<EnglishCard> {
       setState(() {
         word.isFavorite = !word.isFavorite;
       });
+
+      Set<String> favorite = (prefs.getStringList(DBKeys.favorites) ?? []).toSet();
+      if (word.noun != null) {
+        favorite.add(word.noun!);
+        prefs.setStringList(DBKeys.favorites, favorite.toList());
+      }
     }
 
     return Padding(
@@ -43,7 +62,7 @@ class _EnglishCardState extends State<EnglishCard> {
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  FavoriteBtn(isFavorite: word.isFavorite, onToggleFavorite: () => word.isFavorite = !word.isFavorite),
+                  FavoriteBtn(isFavorite: word.isFavorite, onToggleFavorite: () => toggle()),
                   RichText(
                     maxLines: 1,
                     overflow: TextOverflow.ellipsis,

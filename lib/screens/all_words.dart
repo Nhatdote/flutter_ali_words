@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_app/models/english_word.dart';
+import 'package:flutter_app/ultils/db_keys.dart';
 import 'package:flutter_app/ultils/style.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 import '../wigets/favorite_btn.dart';
 
@@ -12,6 +14,7 @@ class AllWords extends StatefulWidget {
 }
 
 class _AllWordsState extends State<AllWords> {
+  late SharedPreferences prefs;
   final ScrollController _scrollController = ScrollController();
   List<EnglishWord> list = [];
   int start = 0;
@@ -28,11 +31,19 @@ class _AllWordsState extends State<AllWords> {
   }
 
   toggleFavorite(int index) {
-    setState(() {
-      if (index > 0 && index <= list.length) {
-        list[index].isFavorite = !list[index].isFavorite;
+    if (index >= 0 && index <= list.length) { 
+      EnglishWord word = list[index];
+
+      setState(() {
+        word.isFavorite = !word.isFavorite;
+      });
+
+      Set<String> favorite = (prefs.getStringList(DBKeys.favorites) ?? []).toSet();
+      if (word.noun != null) {
+        favorite.add(word.noun!);
+        prefs.setStringList(DBKeys.favorites, favorite.toList());
       }
-    });
+    }
   }
 
   void _scrollListener() async {
@@ -53,6 +64,10 @@ class _AllWordsState extends State<AllWords> {
     super.initState();
     _scrollController.addListener(_scrollListener);
     load();
+
+    () async {
+      prefs = await SharedPreferences.getInstance();
+    }();
   }
 
   @override

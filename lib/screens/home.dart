@@ -2,6 +2,7 @@ import "dart:math";
 import "package:flutter/material.dart";
 import "package:flutter_app/models/english_word.dart";
 import "package:flutter_app/screens/all_words.dart";
+import "package:flutter_app/screens/favorite.dart";
 import "package:flutter_app/screens/setting.dart";
 import "package:flutter_app/ultils/db_keys.dart";
 import "package:flutter_app/ultils/style.dart";
@@ -108,6 +109,8 @@ class _HomePageState extends State<HomePage> {
                       label: 'Favorites',
                       onTap: () {
                         _scaffoldState.currentState?.closeDrawer();
+                        Navigator.push(context, 
+                          MaterialPageRoute(builder: (_) => const FavoritePage()));
                       }),
                 ),
                 Padding(
