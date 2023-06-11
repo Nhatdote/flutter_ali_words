@@ -42,10 +42,11 @@ class _HomePageState extends State<HomePage> {
   defaultState() async {
     prefs = await SharedPreferences.getInstance();
     int perPage = prefs.getInt(DBKeys.perPage) ?? 5;
+    List<EnglishWord> list = await EnglishWord.getList(perPage);
 
     setState(() {
       _currentPage = 0;
-      words = EnglishWord.getList(perPage);
+      words = list;
       quote = EnglishWord.getQuote();
     });
   }

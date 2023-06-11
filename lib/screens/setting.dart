@@ -75,7 +75,7 @@ class _SettingState extends State<Setting> {
           Expanded(
             flex: 2,
             child: Container(
-              padding: const EdgeInsets.only(left: 12),
+              padding: const EdgeInsets.only(left: 12, right: 12),
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [

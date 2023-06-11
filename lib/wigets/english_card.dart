@@ -38,9 +38,15 @@ class _EnglishCardState extends State<EnglishCard> {
         word.isFavorite = !word.isFavorite;
       });
 
-      Set<String> favorite = (prefs.getStringList(DBKeys.favorites) ?? []).toSet();
       if (word.noun != null) {
-        favorite.add(word.noun!);
+        Set<String> favorite = (prefs.getStringList(DBKeys.favorites) ?? []).toSet();
+
+        if (word.isFavorite) {
+          favorite.add(word.noun!);
+        } else {
+          favorite.remove(word.noun);
+        }
+
         prefs.setStringList(DBKeys.favorites, favorite.toList());
       }
     }

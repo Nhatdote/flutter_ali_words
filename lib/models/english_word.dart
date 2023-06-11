@@ -21,22 +21,27 @@ class EnglishWord {
     this.isFavorite = false
   });
 
-  static EnglishWord _make(word) {
+  static EnglishWord _make(String word, [Set<String>? favorites]) {
+    
+
     return EnglishWord(
       id: word,
       letter: word.substring(0, 1).toUpperCase(),
       after: word.substring(1),
       noun: word,
-      quote: getQuote(40)
+      quote: getQuote(40),
+      isFavorite: favorites == null ? false : favorites.contains(word)
     );
   }
 
-  static List<EnglishWord> paginate(int start) {
+  static Future<List<EnglishWord>> paginate(int start) async {
     int perPage = 20;
     Iterable<String> items = nouns.getRange(start, start + perPage);
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    Set<String> favorites = (prefs.getStringList(DBKeys.favorites) ?? []).toSet();
 
     return items
-        .map((h) => _make(h))
+        .map((h) => _make(h, favorites))
         .toList();
   }
 
@@ -47,8 +52,10 @@ class EnglishWord {
     return items.map((e) => _make(e)).toList();
   }
 
-  static List<EnglishWord> getList([int len = 5]) {
+  static Future<List<EnglishWord>> getList([int len = 5]) async {
     final random = Random();
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    Set<String> favorites = (prefs.getStringList(DBKeys.favorites) ?? []).toSet();
 
     int start = random.nextInt(1000) + 1;
     int end = start + len;
@@ -56,7 +63,7 @@ class EnglishWord {
     Iterable<String> items = nouns.getRange(start, end);
 
     return items
-        .map((h) => _make(h))
+        .map((h) => _make(h, favorites))
         .toList();
   }
 

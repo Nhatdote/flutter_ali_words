@@ -21,8 +21,8 @@ class _AllWordsState extends State<AllWords> {
   bool showLoading = false;
   final int offset = 20;
 
-  load() {
-    List<EnglishWord> items = EnglishWord.paginate(start);
+  load() async {
+    List<EnglishWord> items = await EnglishWord.paginate(start);
     setState(() {
       start += offset;
       list += items;
@@ -38,9 +38,15 @@ class _AllWordsState extends State<AllWords> {
         word.isFavorite = !word.isFavorite;
       });
 
-      Set<String> favorite = (prefs.getStringList(DBKeys.favorites) ?? []).toSet();
       if (word.noun != null) {
-        favorite.add(word.noun!);
+        Set<String> favorite = (prefs.getStringList(DBKeys.favorites) ?? []).toSet();
+
+        if (word.isFavorite) {
+          favorite.add(word.noun!);
+        } else {
+          favorite.remove(word.noun);
+        }
+
         prefs.setStringList(DBKeys.favorites, favorite.toList());
       }
     }
