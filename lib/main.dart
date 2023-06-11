@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:flutter_app/screens/landing.dart';
-import 'package:flutter_app/utils/db.dart';
+import 'package:flutter_ali_words/screens/landing.dart';
+import 'package:flutter_ali_words/utils/db.dart';
 
 void main() => runApp(const MyApp());
 

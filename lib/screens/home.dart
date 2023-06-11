@@ -1,15 +1,15 @@
 import "dart:math";
 import "package:flutter/material.dart";
-import "package:flutter_app/models/english_word.dart";
-import "package:flutter_app/screens/all_words.dart";
-import "package:flutter_app/screens/favorite.dart";
-import "package:flutter_app/screens/setting.dart";
-import 'package:flutter_app/utils/db.dart';
-import 'package:flutter_app/utils/style.dart';
-import "package:flutter_app/wigets/drawer_btn.dart";
-import "package:flutter_app/wigets/english_card.dart";
-import "package:flutter_app/wigets/indicator.dart";
-import "package:flutter_app/wigets/showmore_card.dart";
+import "package:flutter_ali_words/models/english_word.dart";
+import "package:flutter_ali_words/screens/all_words.dart";
+import "package:flutter_ali_words/screens/favorite.dart";
+import "package:flutter_ali_words/screens/setting.dart";
+import 'package:flutter_ali_words/utils/db.dart';
+import 'package:flutter_ali_words/utils/style.dart';
+import "package:flutter_ali_words/wigets/drawer_btn.dart";
+import "package:flutter_ali_words/wigets/english_card.dart";
+import "package:flutter_ali_words/wigets/indicator.dart";
+import "package:flutter_ali_words/wigets/showmore_card.dart";
 
 class HomePage extends StatefulWidget {
   const HomePage({super.key});

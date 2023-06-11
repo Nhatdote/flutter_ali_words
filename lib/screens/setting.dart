@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_app/utils/db.dart';
-import 'package:flutter_app/utils/style.dart';
+import 'package:flutter_ali_words/utils/db.dart';
+import 'package:flutter_ali_words/utils/style.dart';
 
 class Setting extends StatefulWidget {
   const Setting({super.key});

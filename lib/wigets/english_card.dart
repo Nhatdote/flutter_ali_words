@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_app/models/english_word.dart';
-import 'package:flutter_app/utils/utils.dart';
-import 'package:flutter_app/wigets/favorite_btn.dart';
+import 'package:flutter_ali_words/models/english_word.dart';
+import 'package:flutter_ali_words/utils/utils.dart';
+import 'package:flutter_ali_words/wigets/favorite_btn.dart';
 import '../utils/style.dart';
 
 

@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_app/screens/all_words.dart';
-import 'package:flutter_app/utils/style.dart';
+import 'package:flutter_ali_words/screens/all_words.dart';
+import 'package:flutter_ali_words/utils/style.dart';
 
 class ShowmoreCard extends StatelessWidget {
   const ShowmoreCard({super.key});

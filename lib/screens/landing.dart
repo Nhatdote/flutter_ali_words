@@ -1,7 +1,7 @@
 import "package:flutter/material.dart";
-import "package:flutter_app/screens/home.dart";
-import 'package:flutter_app/utils/style.dart';
-import "package:flutter_app/utils/toast.dart";
+import "package:flutter_ali_words/screens/home.dart";
+import 'package:flutter_ali_words/utils/style.dart';
+import "package:flutter_ali_words/utils/toast.dart";
 
 class LandingPage extends StatelessWidget {
   const LandingPage({super.key});

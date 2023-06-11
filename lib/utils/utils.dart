@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_app/models/english_word.dart';
-import 'package:flutter_app/utils/db.dart';
-import 'package:flutter_app/utils/toast.dart';
+import 'package:flutter_ali_words/models/english_word.dart';
+import 'package:flutter_ali_words/utils/db.dart';
+import 'package:flutter_ali_words/utils/toast.dart';
 
 
 class Utils {

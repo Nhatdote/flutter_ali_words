@@ -1,7 +1,7 @@
 import 'dart:math';
 
 import 'package:english_words/english_words.dart';
-import 'package:flutter_app/utils/db.dart';
+import 'package:flutter_ali_words/utils/db.dart';
 
 class EnglishWord {
   String? id;

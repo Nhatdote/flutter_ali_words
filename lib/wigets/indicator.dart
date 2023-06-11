@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_app/utils/style.dart';
+import 'package:flutter_ali_words/utils/style.dart';
 
 class Indicator extends StatelessWidget {
   final String index;

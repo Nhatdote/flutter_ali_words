@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_app/models/english_word.dart';
-import 'package:flutter_app/utils/style.dart';
-import 'package:flutter_app/utils/utils.dart';
+import 'package:flutter_ali_words/models/english_word.dart';
+import 'package:flutter_ali_words/utils/style.dart';
+import 'package:flutter_ali_words/utils/utils.dart';
 
 class AllWords extends StatefulWidget {
   const AllWords({super.key});
