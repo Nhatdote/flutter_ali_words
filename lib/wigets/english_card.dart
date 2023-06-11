@@ -1,9 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_app/models/english_word.dart';
-import 'package:flutter_app/ultils/db_keys.dart';
+import 'package:flutter_app/utils/utils.dart';
 import 'package:flutter_app/wigets/favorite_btn.dart';
-import 'package:shared_preferences/shared_preferences.dart';
-import '../ultils/style.dart';
+import '../utils/style.dart';
 
 
 class EnglishCard extends StatefulWidget {
@@ -16,16 +15,11 @@ class EnglishCard extends StatefulWidget {
 }
 
 class _EnglishCardState extends State<EnglishCard> {
-  late SharedPreferences prefs;
   
   @override
   void initState() {
     // TODO: implement initState
     super.initState();
-
-    () async {
-      prefs = await SharedPreferences.getInstance();
-    }();
   }
 
   @override
@@ -38,17 +32,7 @@ class _EnglishCardState extends State<EnglishCard> {
         word.isFavorite = !word.isFavorite;
       });
 
-      if (word.noun != null) {
-        Set<String> favorite = (prefs.getStringList(DBKeys.favorites) ?? []).toSet();
-
-        if (word.isFavorite) {
-          favorite.add(word.noun!);
-        } else {
-          favorite.remove(word.noun);
-        }
-
-        prefs.setStringList(DBKeys.favorites, favorite.toList());
-      }
+      Utils.toggleFavorite(word);
     }
 
     return Padding(

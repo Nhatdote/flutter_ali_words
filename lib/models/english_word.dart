@@ -1,8 +1,7 @@
 import 'dart:math';
 
 import 'package:english_words/english_words.dart';
-import 'package:flutter_app/ultils/db_keys.dart';
-import 'package:shared_preferences/shared_preferences.dart';
+import 'package:flutter_app/utils/db.dart';
 
 class EnglishWord {
   String? id;
@@ -34,28 +33,25 @@ class EnglishWord {
     );
   }
 
-  static Future<List<EnglishWord>> paginate(int start) async {
+  static List<EnglishWord> paginate(int start) {
     int perPage = 20;
     Iterable<String> items = nouns.getRange(start, start + perPage);
-    SharedPreferences prefs = await SharedPreferences.getInstance();
-    Set<String> favorites = (prefs.getStringList(DBKeys.favorites) ?? []).toSet();
+    Set<String> favorites = (DB.prefs.getStringList(DB.favorites) ?? []).toSet();
 
     return items
         .map((h) => _make(h, favorites))
         .toList();
   }
 
-  static Future<List<EnglishWord>> getFavorite() async {
-    SharedPreferences prefs = await SharedPreferences.getInstance();
-    List<String> items = prefs.getStringList(DBKeys.favorites) ?? [];
+  static List<EnglishWord> getFavorite() {
+    List<String> items = DB.prefs.getStringList(DB.favorites) ?? [];
 
     return items.map((e) => _make(e)).toList();
   }
 
-  static Future<List<EnglishWord>> getList([int len = 5]) async {
+  static List<EnglishWord> getList([int len = 5]) {
     final random = Random();
-    SharedPreferences prefs = await SharedPreferences.getInstance();
-    Set<String> favorites = (prefs.getStringList(DBKeys.favorites) ?? []).toSet();
+    Set<String> favorites = (DB.prefs.getStringList(DB.favorites) ?? []).toSet();
 
     int start = random.nextInt(1000) + 1;
     int end = start + len;

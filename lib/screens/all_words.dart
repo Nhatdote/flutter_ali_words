@@ -1,10 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_app/models/english_word.dart';
-import 'package:flutter_app/ultils/db_keys.dart';
-import 'package:flutter_app/ultils/style.dart';
-import 'package:shared_preferences/shared_preferences.dart';
-
-import '../wigets/favorite_btn.dart';
+import 'package:flutter_app/utils/style.dart';
+import 'package:flutter_app/utils/utils.dart';
 
 class AllWords extends StatefulWidget {
   const AllWords({super.key});
@@ -14,15 +11,14 @@ class AllWords extends StatefulWidget {
 }
 
 class _AllWordsState extends State<AllWords> {
-  late SharedPreferences prefs;
   final ScrollController _scrollController = ScrollController();
   List<EnglishWord> list = [];
   int start = 0;
   bool showLoading = false;
   final int offset = 20;
 
-  load() async {
-    List<EnglishWord> items = await EnglishWord.paginate(start);
+  load() {
+    List<EnglishWord> items = EnglishWord.paginate(start);
     setState(() {
       start += offset;
       list += items;
@@ -38,21 +34,11 @@ class _AllWordsState extends State<AllWords> {
         word.isFavorite = !word.isFavorite;
       });
 
-      if (word.noun != null) {
-        Set<String> favorite = (prefs.getStringList(DBKeys.favorites) ?? []).toSet();
-
-        if (word.isFavorite) {
-          favorite.add(word.noun!);
-        } else {
-          favorite.remove(word.noun);
-        }
-
-        prefs.setStringList(DBKeys.favorites, favorite.toList());
-      }
+      Utils.toggleFavorite(word);
     }
   }
 
-  void _scrollListener() async {
+  void _scrollListener() {
     if (_scrollController.position.pixels > _scrollController.position.maxScrollExtent) {
       setState(() {
         showLoading = true;
@@ -60,7 +46,7 @@ class _AllWordsState extends State<AllWords> {
     }
 
     if (_scrollController.position.pixels == _scrollController.position.maxScrollExtent) {
-      await load();
+      load();
       _scrollController.animateTo(_scrollController.offset + 50, duration: const Duration(milliseconds: 200), curve: Curves.linear);
     }
   }
@@ -70,10 +56,6 @@ class _AllWordsState extends State<AllWords> {
     super.initState();
     _scrollController.addListener(_scrollListener);
     load();
-
-    () async {
-      prefs = await SharedPreferences.getInstance();
-    }();
   }
 
   @override

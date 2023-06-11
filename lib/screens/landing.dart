@@ -1,12 +1,15 @@
 import "package:flutter/material.dart";
 import "package:flutter_app/screens/home.dart";
-import "package:flutter_app/ultils/style.dart";
+import 'package:flutter_app/utils/style.dart';
+import "package:flutter_app/utils/toast.dart";
 
 class LandingPage extends StatelessWidget {
   const LandingPage({super.key});
 
   @override
   Widget build(BuildContext context) {
+    Toast.initialize(context);
+
     return Scaffold(
       body: Container(
         padding: const EdgeInsets.symmetric(horizontal: 16),

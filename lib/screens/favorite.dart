@@ -1,8 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_app/models/english_word.dart';
-import 'package:flutter_app/ultils/db_keys.dart';
-import 'package:flutter_app/ultils/style.dart';
-import 'package:shared_preferences/shared_preferences.dart';
+import 'package:flutter_app/utils/db.dart';
+import 'package:flutter_app/utils/style.dart';
 
 class FavoritePage extends StatefulWidget {
   const FavoritePage({super.key});
@@ -12,7 +11,6 @@ class FavoritePage extends StatefulWidget {
 }
 
 class _FavoritePageState extends State<FavoritePage> {
-  late SharedPreferences prefs;
   final ScrollController _scrollController = ScrollController();
   List<EnglishWord> list = [];
   
@@ -20,23 +18,17 @@ class _FavoritePageState extends State<FavoritePage> {
   void initState() {
     // TODO: implement initState
     super.initState();
-
-    () async {
-      prefs = await SharedPreferences.getInstance();
-      List<EnglishWord> list2 = await EnglishWord.getFavorite();
-
-      setState(() {
-        list = list2;
-      });
-    }();
+    setState(() {
+      list = EnglishWord.getFavorite();
+    });
   }
 
   void unFavorite(int index) {
     if (list[index].noun != null) {
       final String noun = list[index].noun!;
-      Set<String> favorites = (prefs.getStringList(DBKeys.favorites) ?? []).toSet();
+      Set<String> favorites = (DB.prefs.getStringList(DB.favorites) ?? []).toSet();
       favorites.remove(noun);
-      prefs.setStringList(DBKeys.favorites, favorites.toList());
+      DB.prefs.setStringList(DB.favorites, favorites.toList());
     }
 
     setState(() {

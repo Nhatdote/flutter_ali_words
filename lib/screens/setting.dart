@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_app/ultils/db_keys.dart';
-import 'package:flutter_app/ultils/style.dart';
-import 'package:shared_preferences/shared_preferences.dart';
+import 'package:flutter_app/utils/db.dart';
+import 'package:flutter_app/utils/style.dart';
 
 class Setting extends StatefulWidget {
   const Setting({super.key});
@@ -13,21 +12,17 @@ class Setting extends StatefulWidget {
 class _SettingState extends State<Setting> {
 
   late double slideValue = 5;
-  late SharedPreferences prefs;
 
   @override
   void initState() {
     // TODO: implement initState
     super.initState();
 
-    () async {
-      prefs = await SharedPreferences.getInstance();
-      int value = prefs.getInt(DBKeys.perPage) ?? 5;
-      
-      setState(() {
-        slideValue = value.toDouble();
-      });
-    }();
+    int value = DB.prefs.getInt(DB.perPage) ?? 5;
+    
+    setState(() {
+      slideValue = value.toDouble();
+    });
   }
 
   final GlobalKey<ScaffoldState> scaffoldKey = GlobalKey<ScaffoldState>();
@@ -43,8 +38,8 @@ class _SettingState extends State<Setting> {
         elevation: 0,
         leading: InkWell(
           onTap: () async {
-            await prefs.setInt(DBKeys.perPage, slideValue.toInt());
-            Navigator.pop(scaffoldKey.currentContext ?? context);
+            await DB.prefs.setInt(DB.perPage, slideValue.toInt());
+            Navigator.pop(scaffoldKey.currentContext ?? context, slideValue);
           },
           child: const Icon(Icons.navigate_before_rounded,
             color: AppStyle.textColor, size: 38

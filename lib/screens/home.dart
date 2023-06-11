@@ -4,13 +4,12 @@ import "package:flutter_app/models/english_word.dart";
 import "package:flutter_app/screens/all_words.dart";
 import "package:flutter_app/screens/favorite.dart";
 import "package:flutter_app/screens/setting.dart";
-import "package:flutter_app/ultils/db_keys.dart";
-import "package:flutter_app/ultils/style.dart";
+import 'package:flutter_app/utils/db.dart';
+import 'package:flutter_app/utils/style.dart';
 import "package:flutter_app/wigets/drawer_btn.dart";
 import "package:flutter_app/wigets/english_card.dart";
 import "package:flutter_app/wigets/indicator.dart";
 import "package:flutter_app/wigets/showmore_card.dart";
-import "package:shared_preferences/shared_preferences.dart";
 
 class HomePage extends StatefulWidget {
   const HomePage({super.key});
@@ -22,7 +21,6 @@ class HomePage extends StatefulWidget {
 class _HomePageState extends State<HomePage> {
   late PageController _pageController;
   late ScrollController indicatorController;
-  late SharedPreferences prefs;
 
   late String quote = "";
   late int _currentPage = 0;
@@ -39,15 +37,25 @@ class _HomePageState extends State<HomePage> {
     defaultState();
   }
 
-  defaultState() async {
-    prefs = await SharedPreferences.getInstance();
-    int perPage = prefs.getInt(DBKeys.perPage) ?? 5;
-    List<EnglishWord> list = await EnglishWord.getList(perPage);
+  defaultState() {
+    int perPage = DB.prefs.getInt(DB.perPage) ?? 5;
+    List<EnglishWord> list = EnglishWord.getList(perPage);
 
     setState(() {
       _currentPage = 0;
       words = list;
       quote = EnglishWord.getQuote();
+    });
+  }
+
+  updateFavorite() {
+    Set<String> favorites = (DB.prefs.getStringList(DB.favorites) ?? []).toSet();
+
+    setState(() {
+      words = words.map((h) {
+        h.isFavorite = favorites.contains(h.noun);
+        return h;
+      }).toList();
     });
   }
 
@@ -108,10 +116,12 @@ class _HomePageState extends State<HomePage> {
                   padding: const EdgeInsets.symmetric(horizontal: 24),
                   child: DrawerBtn(
                       label: 'Favorites',
-                      onTap: () {
+                      onTap: () async {
                         _scaffoldState.currentState?.closeDrawer();
-                        Navigator.push(context, 
+                        await Navigator.push(context, 
                           MaterialPageRoute(builder: (_) => const FavoritePage()));
+
+                        updateFavorite();
                       }),
                 ),
                 Padding(
@@ -128,10 +138,12 @@ class _HomePageState extends State<HomePage> {
                   padding: const EdgeInsets.only(left: 24, right: 24, top: 44),
                   child: DrawerBtn(
                       label: 'Settings',
-                      onTap: () {
+                      onTap: () async {
                         _scaffoldState.currentState?.closeDrawer();
-                        Navigator.push(context,
+                        await Navigator.push(context,
                             MaterialPageRoute(builder: (_) => const Setting()));
+
+                        suffle();
                       }),
                 ),
               ],
