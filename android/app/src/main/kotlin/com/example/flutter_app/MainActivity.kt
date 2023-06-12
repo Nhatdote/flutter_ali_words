@@ -1,4 +1,4 @@
-package com.example.flutter_app
+package com.example.flutter_ali_words
 
 import io.flutter.embedding.android.FlutterActivity
 
