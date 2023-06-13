@@ -3,6 +3,7 @@ import 'package:shared_preferences/shared_preferences.dart';
 class DB {
   static const perPage = 'per_page';
   static const favorites = 'favorites';
+  static const quotes = 'quotes';
 
   static SharedPreferences? _prefs;
 

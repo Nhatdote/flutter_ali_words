@@ -12,7 +12,7 @@ class FavoritePage extends StatefulWidget {
 
 class _FavoritePageState extends State<FavoritePage> {
   final ScrollController _scrollController = ScrollController();
-  List<EnglishWord> list = [];
+  List<Future<EnglishWord>> list = [];
   
   @override
   void initState() {
@@ -24,15 +24,17 @@ class _FavoritePageState extends State<FavoritePage> {
   }
 
   void unFavorite(int index) {
-    if (list[index].noun != null) {
-      final String noun = list[index].noun!;
-      Set<String> favorites = (DB.prefs.getStringList(DB.favorites) ?? []).toSet();
-      favorites.remove(noun);
-      DB.prefs.setStringList(DB.favorites, favorites.toList());
-    }
+    final Future<EnglishWord> word = list[index];
 
     setState(() {
       list.removeAt(index);
+    });
+
+    word.then((h) {
+      final String noun = h.noun;
+      Set<String> favorites = (DB.prefs.getStringList(DB.favorites) ?? []).toSet();
+      favorites.remove(noun);
+      DB.prefs.setStringList(DB.favorites, favorites.toList());
     });
   }
 
@@ -55,37 +57,54 @@ class _FavoritePageState extends State<FavoritePage> {
                 controller: _scrollController,
                 itemCount: list.length,
                 itemBuilder: (context, index) {
-                  EnglishWord word = list[index];
-                  String label = '${word.letter}${word.after}';
-            
-                  return Material(
-                    color: index % 2 == 0 ? Colors.black12 : AppStyle.primaryColor, 
-                    child: Dismissible(
-                      key: UniqueKey(),
-                      direction: DismissDirection.endToStart,
-                      onDismissed: (direction) => unFavorite(index),
-                      background: Container(
-                        color: Colors.redAccent,
-                        alignment: Alignment.centerRight,
-                        padding: const EdgeInsets.only(right: 16),
-                        child: const Icon(
-                          Icons.delete,
-                          color: Colors.white,
-                        ),
-                      ),
-                      child: ListTile(
-                        contentPadding: const EdgeInsets.only(bottom: 6, left: 16, right: 16),
-                        leading: InkWell(
-                          onTap: () => unFavorite(index),
-                          child: const Icon(
-                            Icons.favorite,
-                            color: Colors.red,
+                  return FutureBuilder<EnglishWord>(
+                    future: list[index],
+                    builder: (context, snapshot) {
+                      if (snapshot.hasData) {
+                        final EnglishWord word = snapshot.data!;
+                        String label = '${word.letter}${word.after}';
+
+                        return Material(
+                          color: index % 2 == 0 ? Colors.black12 : AppStyle.primaryColor, 
+                          child: Dismissible(
+                            key: UniqueKey(),
+                            direction: DismissDirection.endToStart,
+                            onDismissed: (direction) => unFavorite(index),
+                            background: Container(
+                              color: Colors.redAccent,
+                              alignment: Alignment.centerRight,
+                              padding: const EdgeInsets.only(right: 16),
+                              child: const Icon(
+                                Icons.delete,
+                                color: Colors.white,
+                              ),
+                            ),
+                            child: ListTile(
+                              contentPadding: const EdgeInsets.only(bottom: 6, left: 16, right: 16),
+                              leading: InkWell(
+                                onTap: () => unFavorite(index),
+                                child: const Icon(
+                                  Icons.favorite,
+                                  color: Colors.red,
+                                ),
+                              ),
+                              title: Text(label, style: AppStyle.h4.copyWith(color: AppStyle.textColor)),
+                              subtitle: Text(word.quote ?? '', maxLines: 2, overflow: TextOverflow.ellipsis, style: const TextStyle(color: Colors.black54, fontSize: 14)),
+                            ),
                           ),
+                        );
+                      } else if (snapshot.hasError) {
+                        return Text('${snapshot.error}');
+                      }
+
+                      // By default, show a loading spinner.
+                      return const Padding(
+                        padding: EdgeInsets.symmetric(vertical: 12),
+                        child: Center(
+                          child: CircularProgressIndicator()
                         ),
-                        title: Text(label, style: AppStyle.h4.copyWith(color: AppStyle.textColor)),
-                        subtitle: Text(word.quote ?? '', maxLines: 2, overflow: TextOverflow.ellipsis, style: const TextStyle(color: Colors.black54, fontSize: 14)),
-                      ),
-                    ),
+                      );
+                    },
                   );
                 },
               ),

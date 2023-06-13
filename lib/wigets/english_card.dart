@@ -1,9 +1,11 @@
+import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:flutter_ali_words/models/english_word.dart';
+import 'package:flutter_ali_words/utils/api.dart';
 import 'package:flutter_ali_words/utils/utils.dart';
 import 'package:flutter_ali_words/wigets/favorite_btn.dart';
 import '../utils/style.dart';
-
+import 'package:http/http.dart' as http;
 
 class EnglishCard extends StatefulWidget {
   final EnglishWord word;
@@ -27,7 +29,20 @@ class _EnglishCardState extends State<EnglishCard> {
     final EnglishWord word = widget.word;
     // final GlobalKey<LikeButtonState> likeButtonKey = GlobalKey<LikeButtonState>();
 
-    toggle() {
+    toggle() async {
+      // var url = Uri.https('dictionaryapi.com', 'api/v3/references/collegiate/json/${word.noun}', {
+      //   'key': API.collegiate_key
+      // });
+      // var response = await http.get(url);
+
+      // if (response.statusCode == 200) {
+      //   List<dynamic> data = jsonDecode(response.body);
+
+      //   if (data[0]?['shortdef']?[0] != null) {
+      //     word.quote = Utils.randomArray(data[0]?['shortdef']);
+      //   }
+      // }
+
       setState(() {
         word.isFavorite = !word.isFavorite;
       });

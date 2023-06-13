@@ -10,6 +10,7 @@ import "package:flutter_ali_words/wigets/drawer_btn.dart";
 import "package:flutter_ali_words/wigets/english_card.dart";
 import "package:flutter_ali_words/wigets/indicator.dart";
 import "package:flutter_ali_words/wigets/showmore_card.dart";
+import "package:flutter_ali_words/wigets/skeleton.dart";
 
 class HomePage extends StatefulWidget {
   const HomePage({super.key});
@@ -24,37 +25,50 @@ class _HomePageState extends State<HomePage> {
 
   late String quote = "";
   late int _currentPage = 0;
+  late List<Future<EnglishWord>> words = [];
+  bool shuffling = false;
 
-  List<EnglishWord> words = [];
-
-  suffle() {
+  void shuffle() async {
     double? page = _pageController.page;
     int duration = page != null ? 100 * max(page.toInt(), 1) : 200;
 
     _pageController.animateToPage(0,
         curve: Curves.decelerate, duration: Duration(milliseconds: duration));
+      
+    setState(() {
+      shuffling = true;
+    });
 
-    defaultState();
-  }
-
-  defaultState() {
-    int perPage = DB.prefs.getInt(DB.perPage) ?? 5;
-    List<EnglishWord> list = EnglishWord.getList(perPage);
+    await defaultState();
 
     setState(() {
-      _currentPage = 0;
-      words = list;
-      quote = EnglishWord.getQuote();
+      shuffling = false;
     });
+  }
+
+  Future<void> defaultState() async {
+    int perPage = DB.prefs.getInt(DB.perPage) ?? 5;
+
+    List<Future<EnglishWord>> list = EnglishWord.getList(perPage);
+
+    await Future.wait(list);
+
+    setState(() {
+        _currentPage = 0;
+        words = list;
+        quote = EnglishWord.getQuote();
+      });
   }
 
   updateFavorite() {
     Set<String> favorites = (DB.prefs.getStringList(DB.favorites) ?? []).toSet();
 
     setState(() {
-      words = words.map((h) {
-        h.isFavorite = favorites.contains(h.noun);
-        return h;
+      words = words.map((w) {
+        return w.then((h) {
+          h.isFavorite = favorites.contains(h.noun);
+          return h;
+        });
       }).toList();
     });
   }
@@ -143,7 +157,7 @@ class _HomePageState extends State<HomePage> {
                         await Navigator.push(context,
                             MaterialPageRoute(builder: (_) => const Setting()));
 
-                        suffle();
+                        shuffle();
                       }),
                 ),
               ],
@@ -165,33 +179,52 @@ class _HomePageState extends State<HomePage> {
                     style: AppStyle.h5.copyWith(color: AppStyle.textColor))),
           ),
           Expanded(
-            child: PageView.builder(
-              controller: _pageController,
-              onPageChanged: (index) {
-                double maxScroll = indicatorController.position.maxScrollExtent;
+            child: words.isEmpty
+              ? const Center(
+                  child: CircularProgressIndicator(),
+                )
+              : PageView.builder(
+                  controller: _pageController,
+                  onPageChanged: (index) {
+                    double maxScroll = indicatorController.position.maxScrollExtent;
 
-                if (maxScroll > 0) {
-                  double jump = (index - 1) * 45;
-                  jump = min(jump, maxScroll);
+                    if (maxScroll > 0) {
+                      double jump = (index - 1) * 45;
+                      jump = min(jump, maxScroll);
 
-                  indicatorController.animateTo(jump,
-                      duration: const Duration(milliseconds: 300),
-                      curve: Curves.easeInCubic);
-                }
+                      indicatorController.animateTo(jump,
+                          duration: const Duration(milliseconds: 300),
+                          curve: Curves.easeInCubic);
+                    }
 
-                setState(() {
-                  _currentPage = index;
-                });
-              },
-              itemCount: words.length + 1,
-              itemBuilder: (context, index) {
-                if (index >= 0 && index < words.length) {
-                  return EnglishCard(word: words[index]);
-                } else {
-                  return const ShowmoreCard();
-                }
-              },
-            ),
+                    setState(() {
+                      _currentPage = index;
+                    });
+                  },
+                  itemCount: words.length + 1,
+                  itemBuilder: (context, index) {
+                    if (index >= 0 && index < words.length) {
+                      return FutureBuilder<EnglishWord>(
+                        future: words[index],
+                        builder: (context, snapshot) {
+                          if (snapshot.hasData) {
+                            final EnglishWord word = snapshot.data!;
+                            return EnglishCard(word: word);
+                          } else if (snapshot.hasError) {
+                            return Text('${snapshot.error}');
+                          }
+
+                          // By default, show a loading spinner.
+                          return const Center(
+                            child: CircularProgressIndicator(),
+                          );
+                        },
+                      );
+                    } else {
+                      return const ShowmoreCard();
+                    }
+                  },
+                ),
           ),
           Container(
             padding: const EdgeInsets.symmetric(horizontal: 24),
@@ -211,9 +244,18 @@ class _HomePageState extends State<HomePage> {
         ],
       )),
       floatingActionButton: FloatingActionButton(
-        onPressed: () => suffle(),
+        onPressed: () => shuffle(),
         backgroundColor: AppStyle.primaryColor,
-        child: const Icon(Icons.sync_rounded, color: Colors.black54),
+        child: shuffling 
+          ? const SizedBox(
+            width: 20,
+            height: 20,
+            child:  CircularProgressIndicator(
+              strokeWidth: 3,
+              color: Colors.redAccent,
+            ),
+          )
+          : const Icon(Icons.sync_rounded, color: Colors.black54)
       ),
     );
   }

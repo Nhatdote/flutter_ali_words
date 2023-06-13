@@ -39,6 +39,8 @@ dependencies:
   auto_size_text: ^3.0.0
   shared_preferences: ^2.1.1
   like_button: ^2.0.5
+  http: ^1.0.0
+  skeleton_loader: ^2.0.0+4
 
 dev_dependencies:
   flutter_test:

@@ -1,3 +1,5 @@
+import 'dart:math';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_ali_words/models/english_word.dart';
 import 'package:flutter_ali_words/utils/db.dart';
@@ -62,4 +64,10 @@ class Utils {
     Toast.show(message, color: color);
   }
   
+  static randomArray(List array) {
+    Random random = Random();
+    int index = random.nextInt(array.length);
+
+    return array[index];
+  }
 }
