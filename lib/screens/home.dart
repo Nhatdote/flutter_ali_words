@@ -1,15 +1,18 @@
+import "dart:convert";
 import "dart:math";
 import "package:flutter/material.dart";
 import "package:flutter_ali_words/models/english_word.dart";
 import "package:flutter_ali_words/screens/all_words.dart";
 import "package:flutter_ali_words/screens/favorite.dart";
 import "package:flutter_ali_words/screens/setting.dart";
+import "package:flutter_ali_words/utils/api.dart";
 import 'package:flutter_ali_words/utils/db.dart';
 import 'package:flutter_ali_words/utils/style.dart';
 import "package:flutter_ali_words/wigets/drawer_btn.dart";
 import "package:flutter_ali_words/wigets/english_card.dart";
 import "package:flutter_ali_words/wigets/indicator.dart";
 import "package:flutter_ali_words/wigets/showmore_card.dart";
+import 'package:http/http.dart' as http;
 
 class HomePage extends StatefulWidget {
   const HomePage({super.key});
@@ -22,7 +25,7 @@ class _HomePageState extends State<HomePage> {
   late PageController _pageController;
   late ScrollController indicatorController;
 
-  late String quote = "";
+  late Map<String, dynamic>? _quote = null;
   late int _currentPage = 0;
   late List<Future<EnglishWord>> words = [];
   bool shuffling = false;
@@ -30,9 +33,6 @@ class _HomePageState extends State<HomePage> {
   void shuffle() async {
     double? page = _pageController.page;
     int duration = page != null ? 100 * max(page.toInt(), 1) : 200;
-
-    _pageController.animateToPage(0,
-        curve: Curves.decelerate, duration: Duration(milliseconds: duration));
       
     setState(() {
       shuffling = true;
@@ -43,6 +43,9 @@ class _HomePageState extends State<HomePage> {
     setState(() {
       shuffling = false;
     });
+
+    _pageController.animateToPage(0,
+        curve: Curves.decelerate, duration: Duration(milliseconds: duration));
   }
 
   Future<void> defaultState() async {
@@ -52,11 +55,30 @@ class _HomePageState extends State<HomePage> {
 
     await Future.wait(list);
 
+    Map<String, dynamic>? randQuote = await getRandomQuote();
+
     setState(() {
         _currentPage = 0;
         words = list;
-        quote = EnglishWord.getQuote();
+        _quote = randQuote;
       });
+  }
+
+  Future<Map<String, dynamic>?> getRandomQuote() async {
+    final res = await http.get(
+      Uri.https(API.quotableBaseUrl, API.quotablePath)
+    );
+
+    if (res.statusCode == 200) {
+      Map<String, dynamic> data = jsonDecode(res.body);
+
+      return {
+        'content': data['content'],
+        'author': data['author']
+      };
+    }
+
+    return null;
   }
 
   updateFavorite() {
@@ -169,13 +191,34 @@ class _HomePageState extends State<HomePage> {
         children: [
           Container(
             padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 16),
+            width: double.infinity,
             height: 94,
-            child: RichText(
-                maxLines: 3,
-                overflow: TextOverflow.fade,
-                text: TextSpan(
-                    text: '"$quote"',
-                    style: AppStyle.h5.copyWith(color: AppStyle.textColor))),
+            child: _quote == null 
+              ? const Text(' ') 
+              : Row(
+                  children: [
+                    Flexible(
+                      child: RichText(
+                        maxLines: 3,
+                        overflow: TextOverflow.ellipsis,
+                        text: TextSpan(
+                          text: _quote!['content'],
+                          style: AppStyle.h5.copyWith(color: AppStyle.textColor))
+                      ),
+                    ),
+                    const Align(
+                      alignment: Alignment.bottomCenter,
+                      child: Icon(Icons.format_quote, color: AppStyle.textGrey, size: 38)
+                    ),
+                  ],
+                )
+          ),
+          Container(
+            alignment: Alignment.centerRight,
+            padding: const EdgeInsets.only(right: 16, bottom: 8),
+            child: Text(_quote == null ? '' : _quote!['author'], 
+              style: AppStyle.h5.copyWith(color: AppStyle.textColor, fontWeight: FontWeight.w600)
+            ),
           ),
           Expanded(
             child: words.isEmpty
@@ -229,16 +272,18 @@ class _HomePageState extends State<HomePage> {
             padding: const EdgeInsets.symmetric(horizontal: 24),
             margin: const EdgeInsets.only(bottom: 110),
             height: 30,
-            child: ListView.builder(
-              physics: const NeverScrollableScrollPhysics(),
-              controller: indicatorController,
-              scrollDirection: Axis.horizontal,
-              itemCount: words.length + 1,
-              itemBuilder: (context, index) {
-                String label = index >= words.length ? '+' : (index + 1).toString();
-                return Indicator(index: label, isActive: index == _currentPage);
-              },
-            ),
+            child: words.isEmpty 
+              ? const Text('')
+              : ListView.builder(
+                physics: const NeverScrollableScrollPhysics(),
+                controller: indicatorController,
+                scrollDirection: Axis.horizontal,
+                itemCount: words.length + 1,
+                itemBuilder: (context, index) {
+                  String label = index >= words.length ? '+' : (index + 1).toString();
+                  return Indicator(index: label, isActive: index == _currentPage);
+                },
+              ),
           )
         ],
       )),

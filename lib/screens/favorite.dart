@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_ali_words/models/english_word.dart';
-import 'package:flutter_ali_words/utils/db.dart';
 import 'package:flutter_ali_words/utils/style.dart';
+import 'package:flutter_ali_words/utils/utils.dart';
 
 class FavoritePage extends StatefulWidget {
   const FavoritePage({super.key});
@@ -23,19 +23,15 @@ class _FavoritePageState extends State<FavoritePage> {
     });
   }
 
-  void unFavorite(int index) {
-    final Future<EnglishWord> word = list[index];
+  void unFavorite(int index) async {
+    final EnglishWord word = await list[index];
 
     setState(() {
       list.removeAt(index);
     });
 
-    word.then((h) {
-      final String noun = h.noun;
-      Set<String> favorites = (DB.prefs.getStringList(DB.favorites) ?? []).toSet();
-      favorites.remove(noun);
-      DB.prefs.setStringList(DB.favorites, favorites.toList());
-    });
+    word.isFavorite = false;
+    Utils.updateFavorite(word);
   }
 
   @override

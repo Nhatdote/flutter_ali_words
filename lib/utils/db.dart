@@ -9,6 +9,7 @@ class DB {
 
   static Future<void> init() async {
     _prefs = await SharedPreferences.getInstance();
+    // _prefs?.clear();
   }
 
   static SharedPreferences get prefs {

@@ -30,7 +30,7 @@ class LandingPage extends StatelessWidget {
                     style: AppStyle.h2.copyWith(
                         color: AppStyle.blackGrey,
                         fontWeight: FontWeight.bold)),
-                Text('Qoutes"',
+                Text('Quotes"',
                     style: AppStyle.h4
                         .copyWith(height: 0.5, fontWeight: FontWeight.bold),
                     textAlign: TextAlign.right)

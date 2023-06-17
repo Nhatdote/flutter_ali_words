@@ -82,12 +82,16 @@ class _EnglishCardState extends State<EnglishCard> {
                               style: AppStyle.h3.copyWith(fontSize: 54, shadows: []))
                         ]),
                   ),
+                  Padding(
+                    padding: const EdgeInsets.only(bottom: 16, left: 8),
+                    child: Text(word.phonetic ?? '')
+                  ),
                   Expanded(
                     child: Container(
                       padding: const EdgeInsets.only(left: 8, right: 8, bottom: 16),
                       child: SingleChildScrollView(
                           child: Text(
-                        '"${word.quote}"',
+                          '${word.quote}',
                         style: const TextStyle(fontSize: 20, letterSpacing: 0.5),
                       )),
                     ),
