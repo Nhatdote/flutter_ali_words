@@ -37,7 +37,7 @@ class _AllWordsState extends State<AllWords> {
         word.isFavorite = !word.isFavorite;
       });
 
-      Utils.toggleFavorite(word);
+      Utils.updateFavorite(word);
     }
   }
 

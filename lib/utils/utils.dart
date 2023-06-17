@@ -8,17 +8,13 @@ import 'package:flutter_ali_words/utils/toast.dart';
 
 class Utils {
 
-  static toggleFavorite(EnglishWord word) async {
-    if (word.noun == null) {
-      return;
-    }
-
+  static updateFavorite(EnglishWord word) async {
     Set<String> favorites = (DB.prefs.getStringList(DB.favorites) ?? []).toSet();
     late dynamic message;
     late Color color;
     
     if (word.isFavorite) {
-      favorites.add(word.noun!);
+      favorites.add(word.noun);
       color = Colors.green;
       message = RichText(
             text: TextSpan(
@@ -28,7 +24,7 @@ class Utils {
               children: <TextSpan>[
                 const TextSpan(text: 'Added '),
                 TextSpan(
-                  text: '"${word.noun!.toUpperCase()}"',
+                  text: '"${word.noun.toUpperCase()}"',
                   style: const TextStyle(
                     fontWeight: FontWeight.bold,
                   ),
@@ -48,7 +44,7 @@ class Utils {
               children: <TextSpan>[
                 const TextSpan(text: 'Removed '),
                 TextSpan(
-                  text: '"${word.noun!.toUpperCase()}"',
+                  text: '"${word.noun.toUpperCase()}"',
                   style: const TextStyle(
                     fontWeight: FontWeight.bold,
                   ),

@@ -10,7 +10,6 @@ import "package:flutter_ali_words/wigets/drawer_btn.dart";
 import "package:flutter_ali_words/wigets/english_card.dart";
 import "package:flutter_ali_words/wigets/indicator.dart";
 import "package:flutter_ali_words/wigets/showmore_card.dart";
-import "package:flutter_ali_words/wigets/skeleton.dart";
 
 class HomePage extends StatefulWidget {
   const HomePage({super.key});

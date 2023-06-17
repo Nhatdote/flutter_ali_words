@@ -1,11 +1,8 @@
-import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:flutter_ali_words/models/english_word.dart';
-import 'package:flutter_ali_words/utils/api.dart';
 import 'package:flutter_ali_words/utils/utils.dart';
 import 'package:flutter_ali_words/wigets/favorite_btn.dart';
 import '../utils/style.dart';
-import 'package:http/http.dart' as http;
 
 class EnglishCard extends StatefulWidget {
   final EnglishWord word;
@@ -47,7 +44,7 @@ class _EnglishCardState extends State<EnglishCard> {
         word.isFavorite = !word.isFavorite;
       });
 
-      Utils.toggleFavorite(word);
+      Utils.updateFavorite(word);
     }
 
     return Padding(
