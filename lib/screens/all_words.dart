@@ -15,7 +15,6 @@ class _AllWordsState extends State<AllWords> {
   final ScrollController _scrollController = ScrollController();
   List<Future<EnglishWord>> list = [];
   int start = 0;
-  bool showLoading = false;
   final int offset = 20;
 
   load() async {
@@ -24,7 +23,6 @@ class _AllWordsState extends State<AllWords> {
     setState(() {
       start += offset;
       list += items;
-      showLoading = false;
     });
 
     await Future.wait(items);
@@ -44,12 +42,6 @@ class _AllWordsState extends State<AllWords> {
   }
 
   void _scrollListener() {
-    if (_scrollController.position.pixels > _scrollController.position.maxScrollExtent) {
-      setState(() {
-        showLoading = true;
-      });
-    }
-
     if (_scrollController.position.pixels == _scrollController.position.maxScrollExtent) {
       load();
       _scrollController.animateTo(_scrollController.offset + 50, duration: const Duration(milliseconds: 200), curve: Curves.linear);
@@ -88,8 +80,12 @@ class _AllWordsState extends State<AllWords> {
             Expanded(
               child: ListView.builder(
                 controller: _scrollController,
-                itemCount: list.length,
+                itemCount: list.length + 1,
                 itemBuilder: (context, index) {
+                  if (index == list.length) {
+                    return const Skeleton(length: 5);
+                  }
+
                   return FutureBuilder(
                     future: list[index],
                     builder:(context, snapshot) {
@@ -128,11 +124,6 @@ class _AllWordsState extends State<AllWords> {
                 },
               ),
             ),
-            Container(
-              child: !showLoading 
-                ? const Text(' ') 
-                : const Skeleton(length: 1)
-            )
           ],
         ),
       )
