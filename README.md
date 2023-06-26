@@ -1,9 +1,9 @@
 # Fluuter ali words
 ### Introduce
-My first Flutter app
-Learn Dart language & basic Flutter
-Random some english word with defination, allow to add favorite
-Tutorial: [200Lab Fluuter For Beginer 2021](https://www.youtube.com/watch?v=duvldqNOcTk&list=PLFcgubjtcw5U-Y6z1gpR02ebF-jyLoyga&ab_channel=200LabEducation) (Learn design & syntax)
+- My first Flutter app 
+- Learn Dart language & basic Flutter
+- Random some english word with defination, allow to add favorite
+- Tutorial: [200Lab Fluuter For Beginer 2021](https://www.youtube.com/watch?v=duvldqNOcTk&list=PLFcgubjtcw5U-Y6z1gpR02ebF-jyLoyga&ab_channel=200LabEducation) (Learn design & syntax)
 
 ### Plugin
 | Plugin | README |
