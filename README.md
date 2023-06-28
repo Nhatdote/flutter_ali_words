@@ -14,7 +14,10 @@
 | [Quotable](https://api.quotable.io/random) | Get random quote from famous people |
 
 ### Installing
-_Make sure you have installed Flutter already_
+Install Flutter: https://docs.flutter.dev/get-started/install
+
+_Run the command `flutter docter` and `flutter devices` and make sure it is working properly_
+
 ```sh
 git clone git@github.com:Nhatdote/ali_words.git
 cd ali_words
