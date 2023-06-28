@@ -1,4 +1,4 @@
-# Fluuter ali words
+# Flutter ali words
 ### Introduce
 - My first Flutter app 
 - Learn Dart language & basic Flutter
